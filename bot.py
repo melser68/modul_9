@@ -48,10 +48,13 @@ def input_contact():
         num = input(':  ')
         rez = check_contact(name, num)
         if rez != False:
-            dict_phone.update({rez[0]: rez[1]})
-            print(dict_phone)
+            dict_phone.update({rez[0]: rez[1]})            
             print('Прийнято дані:\nКонтакт: == ',rez[0], ' номер телефону: == ', rez[1])
             check_correct = True
+            phonebook = open('phonebook.txt','a+' )
+            phonebook.write(rez[0] + '  '+ rez[1])
+            phonebook.write('\n')
+            phonebook.close()
         else:
             print('Введено некоректні дані, повтори ввод')
 
