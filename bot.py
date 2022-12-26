@@ -1,5 +1,15 @@
 
 dict_phone = {}
+#Заповнюємо словник існуючими контактами
+def fill_dict_phone():
+    file_book = open('phonebook.txt')
+    line_count = sum(1 for line in open('phonebook.txt'))
+    
+    if line_count >0:
+        for i in file_book:
+            key, value = i.split('  ')
+            dict_phone[key] = value[:-2]
+    file_book.close()
 
 #Ведення логу введених даних
 def decorator_logger(func):
@@ -76,10 +86,13 @@ def main():
             print('1. Я можу створити для тебе книгу контактів з номерами телефонів\n та надавати тобі звідти інформацію.')
             print('2. Бізнес-календар зараз в стадії розробки sorry')
             chois_menu = input('Бажаєш розпочати роботу ? (введи номер відповідного пункту меню):  ')
-            menu_telefon = True
-            
+            menu_telefon = True            
             if chois_menu == '1': 
+                fill_dict_phone()
+                print(dict_phone)
                 while menu_telefon == True:
+                    fill_dict_phone()
+                    print(dict_phone)
                     print('OK\nЯкщо бажаєш додати новий контакт то введи "1"\n' 
                     'Якщо бажаєш змінити або доповнити існуючий контакт "2"\nЯкщо бажаєш продивитися усі контакти "3"')
                     chois_phone = input(' ')
