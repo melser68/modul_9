@@ -29,7 +29,7 @@ def get_operator(operator):
         return print('Введений оператор невідомий')
 
 #Основна процедура
-def main():
+def main(w):
     
     if w == 'yes':
         a = float(input('Введіть перше число: '))
@@ -37,23 +37,29 @@ def main():
         c = input('Введіть оператор: ')
         action_func = get_operator(c)
         
-        if isinstance(action_func(a,b), (int, float)) == False:
+        if type(action_func) != int or type(action_func) != float:
             print('_________________________________')
-            print('Спроба провести некоректну операцію, спробуйте ще раз ввести дані')
+            r = input('Спроба провести некоректну операцію, повторити ? - "yes" Вихід з програми "exit": ')
             print('_________________________________')
-            main()
+            if  r == 'yes':
+                main(r)
+            else:
+                w = 'exit'
+                print('Вихід з програми.')
         else:
             print('_________________________________')
             print('Результат операції: ', action_func(a,b))
             print('_________________________________')
             r = input('Провести розрахунок ще раз - "r", вихід з програми "exit": ')
             if r == 'r':
-                main()
+                main(r)
+            else:
+                print('Вихід з програми.')
     elif w == 'exit':
         print('Вихід з програми.')
 
 
 print('Старт програми елементарного калькулятора')
 w = input('Підтвердження старту (yes), закінчення роботи (exit): ')
-main()
+main(w)
 
