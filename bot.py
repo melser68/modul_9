@@ -1,9 +1,11 @@
+import os
+
 
 dict_phone = {}
 #Заповнюємо словник існуючими контактами
 def fill_dict_phone():
-    file_book = open('phonebook.txt')
-    line_count = sum(1 for line in open('phonebook.txt'))
+    file_book = open('phonebook.msf')
+    line_count = sum(1 for line in open('phonebook.msf'))
     
     if line_count >0:
         for i in file_book:
@@ -61,7 +63,7 @@ def input_contact():
             dict_phone.update({rez[0]: rez[1]})            
             print('Прийнято дані:\nКонтакт: == ',rez[0], ' номер телефону: == ', rez[1])
             check_correct = True
-            phonebook = open('phonebook.txt','a+' )
+            phonebook = open('phonebook.msf','a+' )
             phonebook.write(rez[0] + '  '+ rez[1])
             phonebook.write('\n')
             phonebook.close()
@@ -69,7 +71,10 @@ def input_contact():
             print('Введено некоректні дані, повтори ввод')
 
 
-
+def print_phone():
+    os.system('CLS')
+    for name_book, number_book in dict_phone.items():
+        print ('Контакт: ', name_book , '  ' 'Номер телефону: ', number_book)
 
 
 #Основна процедура
@@ -79,32 +84,53 @@ def main():
     print('Для завершення роботи любе слово яким ти користуєшся при прощанні')
     command = input(':  ').lower()    
     if hello_and_goodbay(command) == 'enter':
+        os.system('CLS')
+        print('How can I help you?')
         activate_menu = True
         mode_menu = 'yes'
     while activate_menu == True:        
         if mode_menu == 'yes':
             print('1. Я можу створити для тебе книгу контактів з номерами телефонів\n та надавати тобі звідти інформацію.')
             print('2. Бізнес-календар зараз в стадії розробки sorry')
+            print('3. Вихід "0"')
             chois_menu = input('Бажаєш розпочати роботу ? (введи номер відповідного пункту меню):  ')
-            menu_telefon = True            
-            if chois_menu == '1': 
-                fill_dict_phone()
-                print(dict_phone)
+                       
+            if chois_menu == '1':
+                os.system('CLS')
+                menu_telefon = True
+                fill_dict_phone()        
                 while menu_telefon == True:
-                    fill_dict_phone()
-                    print(dict_phone)
-                    print('OK\nЯкщо бажаєш додати новий контакт то введи "1"\n' 
-                    'Якщо бажаєш змінити або доповнити існуючий контакт "2"\nЯкщо бажаєш продивитися усі контакти "3"')
-                    chois_phone = input(' ')
-                    if chois_phone == '1':
+                    fill_dict_phone()                    
+                    print('OK\nЯкщо бажаєш додати новий контакт то введи "add"\n' 
+                    'Якщо бажаєш змінити або доповнити існуючий контакт то введи "change"\nЯкщо бажаєш продивитися усі контакти  то введи "show all"\n'
+                    'Повернення у попереднє меню введи "0"')
+                    chois_phone = input(': ')
+                    if chois_phone == 'add':
                         input_contact()
-                        tel_menu = input('Повернутися до меню телефонної книги ? (yes/no)').lower()
+                        tel_menu = input('Повернутися до меню телефонної книги ? (yes/no): ').lower()
                         if tel_menu == 'no':
                             menu_telefon = False
-                    elif chois_phone == '2':
+                        else:
+                            os.system('CLR')
+                    elif chois_phone == 'change':
                         print('Розробляється')  
-                    elif chois_phone == '3':
-                        print('Розробляється') 
+                    elif chois_phone == 'show all':
+                        print_phone()
+                        tel_menu = input(
+                            'Повернутися до меню телефонної книги ? (yes/no): ').lower()
+                        if tel_menu == 'no':
+                            menu_telefon = False
+                        else:
+                            os.system('CLS')
+                            
+                    elif chois_phone == '0':
+                        os.system('CLS')
+                        print('Початкове меню.')
+                        menu_telefon = False
+            else:            
+                activate_menu = False
+                mode_menu = 'no'
+
     else:
         print('== Good bye! ==')
         activate_menu = False
