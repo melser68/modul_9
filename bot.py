@@ -52,7 +52,7 @@ def input_contact():
         while name_contact == False:
             name = input("Введи ім'я контакту:  ")
             try:
-                type(int(name[1])) == int
+                int(name[1])
                 name_contact = False
                 print('Спроба вводу номеру замість імені, повторіть введення')
             except:
@@ -94,14 +94,29 @@ def change_phone(name_search, new_number):
 
 
 #Пошук існуючого контакту, або контактів у довіднику
-def search_kontakts(name_kontakt):
+def search_kontakts(name_list):
     rez_search = {}
-    for kontakt, num_tel in dict_phone.items():
-        if kontakt.lower().find(name_kontakt) != -1:
-            rez_search.update({kontakt:num_tel})    
+    for y in name_list:
+        for kontakt, num_tel in dict_phone.items():
+            if kontakt.lower().find(y) != -1:
+                rez_search.update({kontakt:num_tel})    
     return(rez_search)
 
-
+#Видалення контакту з довідника контактів
+def del_kontakts(name_kontakt):
+    if len(dict_phone) == 0:
+        fill_dict_phone()
+    for name_search_1 in dict_phone:
+        if name_kontakt == name_search_1:
+            dict_phone.pop(name_search_1)
+            break
+    phonebook = open('phonebook.msf', 'w+')
+    for key, data in dict_phone.items():
+        phonebook.write(key + ' , ' + data)
+        phonebook.write('\n')
+    phonebook.close()
+    
+    
 
 
 
@@ -135,6 +150,7 @@ def main():
                 fill_dict_phone()                    
                 print('OK\nЯкщо бажаєш додати новий контакт то введи "add"\n' 
                 'Якщо бажаєш змінити або доповнити існуючий контакт то введи "change"\nЯкщо бажаєш продивитися усі контакти  то введи "show all"\n'
+                'Видалити контакт "del"\n'
                 'Повернення у попереднє меню введи "0"')
                 if chois_phone == '':
                     chois_phone = input(': ')
@@ -147,26 +163,69 @@ def main():
                         os.system('CLS')
                         chois_phone = ''
                 elif chois_phone == 'change':
+                    
                     name_search = input("Введіть ім'я контакту номер якого потрібно змінити:  ").lower() 
-                    rezultat = search_kontakts(name_search)
-                    if len(rezultat) >0:
-                        print('Знайдено контакти : ')
+                    name_list = name_search.split(' ')
+                    rezultat = search_kontakts(name_list)
+                    if len(rezultat) >1:
+                        print('Знайдено похожі контакти : ')
                         for k,s in rezultat.items():
                             print(k,' ', s)
+                        name_search = input("Введи ім'я контакту номер якого бажаєш змінити\n: ").lower()
+                        name_list = name_search.split(':')
+                        rezultat = search_kontakts(name_list)
+                        if len(rezultat) ==1:
+                            for name in rezultat.keys():
+                                new_number = input(f'Введіть новий номер для {name}:\nПриклад: +38-067-2972960:  ')
+                                rez = check_contact(name, new_number)
+                                if rez != False:
+                                    change_phone(name, new_number)
+                                    chois_phone = ''
+                                else:
+                                    print('Некоректний номер телефону, повтор введення')
+                                    chois_phone = 'change'
                     else:
                         q = input('За введеним значенням контактів не знайдено. Повторити пошук ? (yes/no)')
                         if q == 'yes':
                             chois_phone = 'change'
-                    
+                        else:
+                            chois_phone = '0'
+                            continue
 
-                    new_number = input('Введіть новий номер для цього контакту:\nПриклад: +38-067-2972960:  ')
-                    rez = check_contact(name_search, new_number)
-                    if rez != False:
-                        change_phone(name_search, new_number)
-                        chois_phone = ''
+                elif chois_phone == 'del':
+
+                    name_search = input(
+                        "Введи ім'я контакту номер якого потрібно видалити:  ").lower()
+                    name_list = name_search.split(' ')
+                    rezultat = search_kontakts(name_list)
+                    if len(rezultat) >= 1:
+                        print('Знайдено похожі контакти : ')
+                        for k, s in rezultat.items():
+                            print(k, ' ', s)
+                        name_search = input(
+                            "Введи ім'я контакту номер якого бажаєш видалити\n: ").lower()
+                        name_list = name_search.split(':')
+                        rezultat = search_kontakts(name_list)
+                        if len(rezultat) == 1:
+                            for name in rezultat.keys():
+                                respond = input(f'Буде видалено контакт {name}:\n"(yes/no)":  ')
+                                if respond == 'yes':
+                                    del_kontakts(name)
+                                    chois_phone = ''
+                                else:
+                                    print('Операція відмінена')
+                                    os.system('CLS')
+                                    chois_phone = '0'
+                                    continue
                     else:
-                        print('Некоректний номер телефону, повтор введення')
-                        chois_phone = 'change'
+                        q = input(
+                            'За введеним значенням контактів не знайдено. Повторити пошук ? (yes/no)')
+                        if q == 'yes':
+                            chois_phone = 'change'
+                        else:
+                            chois_phone = '0'
+                            continue
+                    
                 elif chois_phone == 'show all':
                     print_phone()
                     tel_menu = input('Повернутися до меню телефонної книги ? (yes/no): ').lower()
@@ -181,6 +240,15 @@ def main():
                     
                     menu_telefon = False
                     chois_phone = ''
+                else:
+                    os.system('CLS')
+                    print(f'Команда "{chois_phone}" не розпізнана')
+                    tel_menu = input('Повернутися до меню телефонної книги ? (yes/no): ').lower()
+                    if tel_menu == 'no':
+                        menu_telefon = False
+                    else:
+                        os.system('CLS')
+                        chois_phone = ''
         else:            
             activate_menu = False
             mode_menu = 'no'
