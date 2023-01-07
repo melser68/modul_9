@@ -167,7 +167,7 @@ def main():
                     name_search = input("Введіть ім'я контакту номер якого потрібно змінити:  ").lower() 
                     name_list = name_search.split(' ')
                     rezultat = search_kontakts(name_list)
-                    if len(rezultat) >1:
+                    if len(rezultat) >=1:
                         print('Знайдено похожі контакти : ')
                         for k,s in rezultat.items():
                             print(k,' ', s)
