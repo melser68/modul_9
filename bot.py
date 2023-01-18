@@ -1,4 +1,4 @@
-import os
+import os, calendar
 
 
 dict_phone = {}
@@ -61,7 +61,7 @@ def input_contact():
         num = input(':  ')
         rez = check_contact(name, num)
         if rez != False:
-            dict_phone.update({rez[0]: rez[1]})            
+            dict_phone[rez[0]]= rez[1]           
             print('Прийнято дані:\nКонтакт: == ',rez[0], ' номер телефону: == ', rez[1])
             check_correct = True
             phonebook = open('phonebook.msf','a+' )
@@ -76,6 +76,7 @@ def print_phone():
     os.system('CLS')
     for name_book, number_book in dict_phone.items():
         print ('Контакт: ', name_book , '  ' 'Номер телефону: ', number_book)
+
 #Зміна номеру телефону у збереженного контакта
 def change_phone(name_search, new_number):
     if len(dict_phone) == 0:
@@ -123,6 +124,7 @@ def del_kontakts(name_kontakt):
 #Основна процедура
 def main():
     activate_menu = False
+    
     print('Вітаю. Це бот помічник. Для початку роботи введи "hello"')
     print('Для завершення роботи любе слово яким ти користуєшся при прощанні')
     command = input(':  ').lower()    
@@ -137,7 +139,7 @@ def main():
             os.system('CLS')
             print('Початкове меню.')
             print('1. Я можу створити для тебе книгу контактів з номерами телефонів\n та надавати тобі звідти інформацію.')
-            print('2. Бізнес-календар зараз в стадії розробки sorry')
+            print('2. Бізнес-календар')
             print('3. Вихід "0"')
             chois_menu = input('Бажаєш розпочати роботу ? (введи номер відповідного пункту меню):  ')
                        
@@ -149,12 +151,15 @@ def main():
             while menu_telefon == True:
                 fill_dict_phone()                    
                 print('OK\nЯкщо бажаєш додати новий контакт то введи "add"\n' 
-                'Якщо бажаєш змінити або доповнити існуючий контакт то введи "change"\nЯкщо бажаєш продивитися усі контакти  то введи "show all"\n'
+                'Якщо бажаєш змінити або доповнити існуючий контакт то введи "change"\n'
+                'Якщо бажаєш продивитися усі контакти  то введи "show all"\n'
+                'Якщо бажаєш знайти потрібний контакт то введи "search"\n'
                 'Видалити контакт "del"\n'
                 'Повернення у попереднє меню введи "0"')
                 if chois_phone == '':
                     chois_phone = input(': ')
                 if chois_phone == 'add':
+                    os.system('CLS')
                     input_contact()
                     tel_menu = input('Повернутися до меню телефонної книги ? (yes/no): ').lower()
                     if tel_menu == 'no':
@@ -234,6 +239,34 @@ def main():
                     else:
                         os.system('CLS')
                         chois_phone = ''
+
+                elif chois_phone == 'search':
+                    name_search = input(
+                        "Введи ім'я контакту номер якого потрібно знайти:  ").lower()
+                    name_list = name_search.split(' ')
+                    rezultat = search_kontakts(name_list)
+                    if len(rezultat)==1:
+                        print('Знайдено контакт: \n')
+                        for k, s in rezultat.items():
+                            print(k, ' ', s)
+                    elif len(rezultat) > 1:
+                        print('Знайдено контакти: \n')
+                        for k, s in rezultat.items():
+                            print(k, ' ', s)
+                    elif len(rezultat) ==0:
+                        print('За введеними даними контактів не знайдено.')
+                        adding_kontakt = input('Бажаєш додати контакт до телефонної книги ? (yes/no) - ').lower()
+                        if adding_kontakt == 'yes':
+                            os.system('CLS')                            
+                            chois_phone = 'add'
+                            continue
+                    tel_menu = input(
+                        'Повернутися до меню телефонної книги ? (yes/no): ').lower()
+                    if tel_menu == 'no':
+                        menu_telefon = False
+                    else:
+                        os.system('CLS')
+                        chois_phone = ''
                             
                 elif chois_phone == '0':
                     os.system('CLS')
@@ -243,7 +276,7 @@ def main():
                 else:
                     os.system('CLS')
                     print(f'Команда "{chois_phone}" не розпізнана')
-                    tel_menu = input('Повернутися до меню телефонної книги ? (yes/no): ').lower()
+                    tel_menu = input('Повернутися до меню телефонної книги ? (yes/no):   ').lower()
                     if tel_menu == 'no':
                         menu_telefon = False
                     else:
@@ -253,9 +286,24 @@ def main():
             activate_menu = False
             mode_menu = 'no'
 
+        if chois_menu == '2':
+            os.system('CLS')
+            calendar.TextCalendar().pryear(2023)
+            repeat = input('Показати календар ще раз ? (yes/no)').lower()
+            if repeat == 'yes':
+                activate_menu = True
+                chois_menu = '2'
+            else:
+                activate_menu = True
+                mode_menu = True
+                chois_menu = ''
+
+
     else:
         print('== Good bye! ==')
         activate_menu = False
+
+
 
 
 main()
