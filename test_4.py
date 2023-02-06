@@ -1,13 +1,12 @@
-import re
-text = 'The main search http://github.com There'
+import pathlib
+path = pathlib.Path(r'C:\11.txt')
 
+fh = open(path, 'r')
+list_employee = list()
+fh.seek(0)
+result = fh.readlines()
+for i in result:
+    list_employee.append(i[:-1])
+fh.close()
 
-def find_all_links(text):
-    result = []
-    iterator = re.finditer(r"(https://|http://)\w+(.)\w+", text)
-    for match in iterator:
-        result.append(match.group())
-    return result
-
-
-print(find_all_links(text))
+print(list_employee)
